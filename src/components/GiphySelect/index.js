@@ -12,6 +12,7 @@ export default class GiphySelect extends Component {
       attribution: PropTypes.string,
     }),
     placeholder: PropTypes.string,
+    query: PropTypes.string,
     requestDelay: PropTypes.number,
     requestKey: PropTypes.string,
     requestLang: PropTypes.string,
@@ -24,6 +25,7 @@ export default class GiphySelect extends Component {
   static defaultProps = {
     theme: {},
     placeholder: 'Search GIFs',
+    query: 'Dogs',
     requestDelay: 500,
     requestKey: 'dc6zaTOxFJmzC',
     requestLang: '',
@@ -48,7 +50,7 @@ export default class GiphySelect extends Component {
       if (this.input && this.props.autoFocus) {
         this.input.focus()
       }
-    }, 0)
+    }, 0)    
   }
 
   loadNextPage = () => {
@@ -81,10 +83,10 @@ export default class GiphySelect extends Component {
   _onWheel = e => e.preventDefault();
 
   _fetchItems = () => {
-    const { requestKey, requestLang, requestRating } = this.props;
+    const { requestKey, requestLang, requestRating, query } = this.props;
     let endpoint = '';
-    if (this._query) {
-      endpoint = `search?q=${encodeURIComponent(this._query)}&`;
+    if (query) {
+      endpoint = `search?q=${encodeURIComponent(query)}&`;
     } else {
       endpoint = 'trending?';
     }
@@ -127,12 +129,6 @@ export default class GiphySelect extends Component {
 
     return (
       <div className={theme.select} onWheel={this._onWheel}>
-        <input
-          className={theme.selectInput}
-          placeholder={placeholder}
-          ref={this._setInputRef}
-          onChange={this._onQueryChange}
-        />
         <GiphyList
           theme={theme}
           items={this.state.items}
@@ -140,7 +136,6 @@ export default class GiphySelect extends Component {
           onEntrySelect={onEntrySelect}
           loadNextPage={this.loadNextPage}
         />
-        <div className={theme.attribution}>Powered by Giphy</div>
       </div>
     );
   }
